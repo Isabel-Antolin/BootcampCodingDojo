@@ -1,0 +1,123 @@
+/*CSS reset settings here*/
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  box-sizing: border-box;
+  /* list-style: none; */
+  text-decoration: none;
+}
+
+#wrapper {
+  background-color: silver;
+  margin: 0px auto;
+  padding: 15px;
+  margin-top: 10px;
+}
+
+#header {
+  min-height: 100px;
+  background-color: green;
+  margin-bottom: 20px;
+}
+
+#main_content {
+  background-color: red;
+}
+
+.subcontents {
+  background-color: yellow;
+  min-height: 170px;
+}
+
+#advertisement {
+  background-color: purple;
+  min-height: 120px;
+}
+
+
+@media only screen and (max-width:480px) {
+  /*phone*/
+
+  #navigation {
+    display: none;
+  }
+
+  #main_content {
+    width: 100%;
+    padding-top: 0.3rem;
+    padding-bottom: 1rem;
+  }
+
+  .subcontents {
+    margin: 1rem;
+  }
+
+  #advertisement {
+    margin: 1rem;
+  }
+}
+
+@media only screen and (min-width:481px) {
+
+  /*tablet*/
+  #navigation {
+    display: none;
+  }
+
+  #main_content {
+    display: inline-block;
+    /* vertical-align: top; */
+    width: 100%;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    padding-left: 3%;
+
+    /* padding: 1rem 1rem 1rem 1rem; */
+  }
+
+  .subcontents {
+    min-width: 46%;
+    display: inline-block;
+    margin-right: 3%;
+    margin-bottom: 3%;
+  }
+
+  #advertisement {
+    margin-right: 3%;
+  }
+}
+
+@media only screen and (min-width:1024px) {
+
+  /* desktop */
+  #navigation {
+    height: 300px;
+    width: 16%;
+    background-color: blue;
+    margin-right: 22px;
+    display: inline-block;
+  }
+
+  #main_content {
+    width: 81%;
+    display: inline-block;
+    vertical-align: top;
+    /* padding-top: 1rem;
+    padding-bottom: 1rem;
+    padding-left: 2%; */
+  }
+
+  .subcontents {
+    min-width: 30%;
+    display: inline-block;
+    margin-right: 2%;
+  }
+
+  #advertisement {
+    margin-top: 10px;
+    margin-bottom: 40px;
+    margin-right: 5%;
+  }
+}
