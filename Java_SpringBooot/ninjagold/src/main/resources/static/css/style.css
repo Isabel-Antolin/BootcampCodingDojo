@@ -1,0 +1,12 @@
+@charset "ISO-8859-1";
+
+body {
+	background-image:
+		url("https://static.vecteezy.com/system/resources/previews/004/640/503/large_2x/black-sky-with-stars-space-background-free-photo.jpg");
+	background-size: cover;
+	
+}
+
+.container {
+	height: 100vh;
+}
