@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.isabel.dojo_overflow.models.Question;
 import com.isabel.dojo_overflow.models.Tag;
@@ -31,7 +32,7 @@ public class MainController {
 
 	@GetMapping("/questions")
 	public String rutaQuestions(Model model) {
-		model.addAttribute("listaPreguntas",mainServices.obtenerPreguntas());
+		model.addAttribute("listaPreguntas", mainServices.obtenerPreguntas());
 		return "questions.jsp";
 	}
 
@@ -86,50 +87,56 @@ public class MainController {
 //	    mainServices.guardarQuestion(question); 
 //		return "redirect:/";
 //	}
-	
+
 	@PostMapping("/questions/new")
-	public String newQuestion(@Valid @ModelAttribute("question") Question question, 
-			                   BindingResult result,
-			                   @RequestParam("tags") String tags) {
+	public String newQuestion(@Valid @ModelAttribute("question") Question question, BindingResult result,
+			@RequestParam("listaTag") String listaTag, RedirectAttributes redirectAttributes) {
+		// ___________________________validar text_question________________________
+		if (result.hasErrors()) {
+			return "newQuestion.jsp";
+		}
+		// ___________________________validar campo vacio tag________________________
+		listaTag = listaTag.trim();
+		if(listaTag.isEmpty()) {
+			redirectAttributes.addFlashAttribute("error", "por favor ingrese un tag");
+			return "redirect:/questions/new";
+		}
+		
+		//___________________ Transformar el valor de tags en una lista de objetos Tag___________
+		List<Tag> tagsList = new ArrayList<>();
+		String[] tagArray = listaTag.split(",");
+		System.out.println(tagArray.length);
 
-	    // Verificar si hay errores de validación
-	    if (result.hasErrors()) {
-	        System.out.println(0);
-	        return "newQuestion.jsp";
-	    }
+		// ___________________________validar que no sean mas de 3 elementos________________________
+		if ( tagArray.length <= 3) {
+			redirectAttributes.addFlashAttribute("error", "por favor ingrese un tag y recordar que maximo deben ser 3");
+			return "redirect:/questions/new";
+		}
 
-	 // Transformar el valor de tags en una lista de objetos Tag
-	    List<Tag> tagsList = new ArrayList<>();
-	    String[] tagArray = tags.split(",");
+		//___________________________recorrer tagArray_______________________________________
+		for (String tagSubject : tagArray) {
+			String subjectTag = tagSubject.trim().toLowerCase();
 
-	    for (String tagSubject : tagArray) {
-	        String trimmedSubject = tagSubject.trim().toLowerCase();
-	        
-	        // Verificar si el tag ya existe en la base de datos
-	        Tag existingTag = mainServices.existeTag(trimmedSubject);
+			// Verificar si el tag ya existe en la base de datos
+			Tag existingTag = mainServices.existeTag(subjectTag);
 
-	        // Si no existe, se crea un nuevo objeto Tag y se agrega a la lista
-	        if (existingTag == null) {
-	            Tag newTag = new Tag();
-	            newTag.setSubject(trimmedSubject);
-	            tagsList.add(newTag);
-	        } else {
-	            tagsList.add(existingTag);
-	        }
-	    } 
-	    if (result.hasErrors()) {
-	        // Manejo de errores...
-	    	
-	        return "newQuestion.jsp";
-	    }
- System.out.println(1);
-//	//Guardar los tags y la pregunta en la base de datos
-//	for (Tag tag : tagsList) {
-//	  mainServices.guardarTag(tag);
-//	}
-//	question.setTags(tagsList);
-//	mainServices.guardarQuestion(question);
+			// Si no existe, se crea un nuevo objeto Tag y se agrega a la lista
+			if (existingTag == null) {
+				Tag newTag = new Tag();
+				newTag.setSubject(subjectTag);
+				tagsList.add(newTag);
+			} else {
+				tagsList.add(existingTag);
+			}
+		}
 
-	    return "redirect:/";
+		 //Guardar los tags y la pregunta en la base de datos
+		 for (Tag tag : tagsList) {
+		 mainServices.guardarTag(tag);
+		 }
+		 question.setTags(tagsList);
+		 mainServices.guardarQuestion(question);
+
+		return "redirect:/";
 	}
 }

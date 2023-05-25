@@ -15,8 +15,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+
 
 @Entity
 @Table(name = "tags")
@@ -26,10 +25,7 @@ public class Tag {
 	private Long id;
 	
 	@Column(length = 65535, columnDefinition = "text")
-	@NotBlank(message = "Por favor escriba tag")
-	@Size(max = 255, message = "Limite maximo es de 255 caracteres")
-//	@Pattern(regexp = "^([^,]+(,\\s*)?){1,3}$", message = "Ingrese hasta tres palabras o frases separadas por comas")
-	private String subject;
+    private String subject;
 
 	@Column(updatable = false)
 	private Date createdAt;
