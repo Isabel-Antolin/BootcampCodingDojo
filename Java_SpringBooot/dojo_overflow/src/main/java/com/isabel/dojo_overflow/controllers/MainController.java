@@ -9,10 +9,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.isabel.dojo_overflow.models.Answer;
 import com.isabel.dojo_overflow.models.Question;
 import com.isabel.dojo_overflow.models.Tag;
 import com.isabel.dojo_overflow.services.MainServices;
@@ -42,51 +44,17 @@ public class MainController {
 	}
 
 	@GetMapping("questions/{id}")
-	public String rutaQuestion() {
+	public String rutaQuestion(@PathVariable("id")Long id,Model model) {
+		//obtener pregunta segun su id
+		Question q = mainServices.getQuestionByID(id);
+		if(q == null) {
+			return"redirect:/";
+		}
+		model.addAttribute("question",q);
 		return "question.jsp";
 	}
 
-//	_____________________________________________________________________________________
-//	@PostMapping("/questions/new")
-//	public String newQuestion(@Valid @ModelAttribute("question") Question question, BindingResult result,
-//			@RequestParam("tags") String tagsValue) {
-//
-////		if (result.hasErrors()) {
-////			System.out.println(0);
-////			return "newQuestion.jsp";
-////		}
-//
-//        //____________________Guardar Tag_____________________________________________
-//		String[] tagArray = tagsValue.split(",");
-//		List<Tag> tags = new ArrayList<>();
-//	
-//
-//		for (String subject : tagArray) {
-//			String txtTag = subject.trim();
-//			txtTag=txtTag.toLowerCase();
-//			// Verificar si el tag ya existe en la base de datos
-//			Tag existingTag = mainServices.existeTag(txtTag);
-//
-//			// si no existe se agrega a la base de datos
-//			if (existingTag == null) {
-//				Tag tag = new Tag();
-//				tag.setSubject(txtTag);
-//				mainServices.guardarTag(tag);
-//				tags.add(tag); // Agregar el tag a la lista de tags de la pregunta
-//	
-//
-//			}else {
-//				 tags.add(existingTag); // Agregar el tag existente a la lista de tags de la pregunta
-//			}
-//		}
-//		
-//	    // Establecer la lista de tags en la pregunta
-//	    question.setTags(tags);
-//
-//	    // Guardar la pregunta en la base de datos
-//	    mainServices.guardarQuestion(question); 
-//		return "redirect:/";
-//	}
+
 
 	@PostMapping("/questions/new")
 	public String newQuestion(@Valid @ModelAttribute("question") Question question, BindingResult result,
@@ -108,7 +76,7 @@ public class MainController {
 		System.out.println(tagArray.length);
 
 		// ___________________________validar que no sean mas de 3 elementos________________________
-		if ( tagArray.length <= 3) {
+		if ( tagArray.length > 3) {
 			redirectAttributes.addFlashAttribute("error", "por favor ingrese un tag y recordar que maximo deben ser 3");
 			return "redirect:/questions/new";
 		}
@@ -137,6 +105,21 @@ public class MainController {
 		 question.setTags(tagsList);
 		 mainServices.guardarQuestion(question);
 
+		return "redirect:/";
+	}
+	
+	@PostMapping("/newAnswer")
+	public String guardarRespuesta(@RequestParam("idQuestion")Long id,@RequestParam("text_answer")String answer) {
+		System.out.println(id);
+		//obtener la entidad question que este en la base de datos por el id
+		Question q = mainServices.getQuestionByID(id);
+		
+		if(q != null) {
+			 Answer newAnswer = new Answer();
+			 newAnswer.setText_answer(answer);
+			 newAnswer.setQuestion(q);
+			 mainServices.guardarAnswer(newAnswer);
+		}
 		return "redirect:/";
 	}
 }

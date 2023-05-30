@@ -33,11 +33,8 @@
 				<label class="w-25">Tags</label>
 				 <input  name="listaTag"class="w-50 " placeholder="ej : animales,color,cocina" />
 			</div>
-			<div>
-				 <p class="text-danger d-block">${error}</p>
-				 
-			</div>
-<form:errors path="tags" class="d-block" />
+			<div><p class="text-danger d-block">${error}</p></div>
+
 			<div class="d-flex justify-content-end mt-5">
 				<button class="mt-3 w-25 btn btn-primary">Submit</button>
 			</div>

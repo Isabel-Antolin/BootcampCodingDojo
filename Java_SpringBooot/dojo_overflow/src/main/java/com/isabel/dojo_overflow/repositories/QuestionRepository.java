@@ -10,4 +10,5 @@ import com.isabel.dojo_overflow.models.Question;
 @Repository
 public interface QuestionRepository extends CrudRepository<Question, Long> {
 	List<Question> findAll();
+	
 }
